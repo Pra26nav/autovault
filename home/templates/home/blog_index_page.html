@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block extra_css %}
+.page-header {
+    padding: 6rem 0 4rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.page-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+}
+
+.page-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 8vw, 7rem);
+    letter-spacing: 0.02em;
+    line-height: 0.9;
+}
+
+.blog-layout {
+    padding: 5rem 0;
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 5rem;
+    align-items: start;
+}
+
+/* POSTS */
+.posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+}
+
+.post-card {
+    background: var(--deep);
+    padding: 2.5rem;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: background 0.2s;
+    position: relative;
+}
+
+.post-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--gold);
+    transform: scaleY(0);
+    transition: transform 0.3s;
+    transform-origin: top;
+}
+
+.post-card:hover { background: var(--surface); }
+.post-card:hover::before { transform: scaleY(1); }
+
+.post-meta {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.post-category {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.7rem;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+}
+
+.post-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+}
+
+.post-author {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+}
+
+.post-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.75rem;
+    transition: color 0.2s;
+}
+
+.post-card:hover .post-title { color: var(--gold); }
+
+.post-intro {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+/* SIDEBAR */
+.blog-sidebar {
+    position: sticky;
+    top: 100px;
+}
+
+.sidebar-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1px;
+}
+
+.sidebar-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.category-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.category-list a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+}
+
+.category-list a:hover,
+.category-list a.active { color: var(--gold); }
+
+.no-posts {
+    padding: 4rem 2rem;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    background: var(--deep);
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <p class="page-eyebrow">AutoVault Editorial</p>
+        <h1 class="page-title">The Blog</h1>
+    </div>
+
+    <div class="blog-layout">
+        <!-- POSTS -->
+        <div>
+            <div class="posts-list">
+                {% for post in posts %}
+                <a href="{{ post.url }}" class="post-card">
+                    <div class="post-meta">
+                        <span class="post-category">{{ post.get_category_display }}</span>
+                        <span class="post-date">{{ post.date|date:"d M Y" }}</span>
+                        <span class="post-author">by {{ post.author }}</span>
+                    </div>
+                    <div class="post-title">{{ post.title }}</div>
+                    <p class="post-intro">{{ post.intro }}</p>
+                </a>
+                {% empty %}
+                <div class="no-posts">No posts published yet.</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- SIDEBAR -->
+        <aside class="blog-sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-title">Categories</div>
+                <ul class="category-list">
+                    <li>
+                        <a href="?" class="{% if not selected_category %}active{% endif %}">
+                            All Posts
+                        </a>
+                    </li>
+                    {% for val, label in categories %}
+                    <li>
+                        <a href="?category={{ val }}"
+                           class="{% if selected_category == val %}active{% endif %}">
+                            {{ label }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </aside>
+    </div>
+</div>
+{% endblock %}

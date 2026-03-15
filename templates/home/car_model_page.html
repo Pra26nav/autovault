@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block extra_css %}
+.car-hero {
+    padding: 5rem 0 4rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.car-cover {
+    width: 100%;
+    height: 520px;
+    overflow: hidden;
+    position: relative;
+}
+
+.car-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.55;
+}
+
+.car-cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--black) 0%, transparent 50%);
+}
+
+.breadcrumb {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+}
+
+.breadcrumb a { color: var(--gold); text-decoration: none; }
+
+.car-hero-layout {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 5rem;
+    align-items: start;
+}
+
+.car-year-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+}
+
+.car-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 8vw, 7rem);
+    line-height: 0.85;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.5rem;
+}
+
+.car-brand-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+}
+
+.car-description {
+    font-size: 0.95rem;
+    line-height: 1.9;
+    color: var(--muted);
+}
+
+.spec-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    position: sticky;
+    top: 100px;
+}
+
+.spec-table-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--border);
+}
+
+.spec-table-header h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+}
+
+.spec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.1rem 2rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.spec-row:last-child { border-bottom: none; }
+
+.spec-key {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.spec-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    color: var(--white);
+    letter-spacing: 0.04em;
+}
+
+.spec-val.highlight { color: var(--gold); }
+
+.numbers-section {
+    padding: 6rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.numbers-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+}
+
+.number-card {
+    background: var(--deep);
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.number-big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.number-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.limited-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(192,57,43,0.15);
+    border: 1px solid #c0392b;
+    color: #c0392b;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    margin-bottom: 2rem;
+}
+
+.back-section { padding: 4rem 0; }
+{% endblock %}
+
+{% block content %}
+{% if page.hero_image %}
+<div class="car-cover">
+    {% image page.hero_image fill-1400x520 as hero_img %}
+    <img src="{{ hero_img.url }}" alt="{{ page.title }}">
+    <div class="car-cover-overlay"></div>
+</div>
+{% endif %}
+
+<div class="container">
+    <div class="car-hero">
+        <div class="breadcrumb">
+            <a href="/">Home</a> /
+            <a href="/brands/">Brands</a> /
+            <a href="{{ page.get_parent.url }}">{{ page.get_parent.title }}</a> /
+            {{ page.title }}
+        </div>
+
+        {% if page.is_limited_edition %}
+        <div class="limited-badge">◆ Limited Edition</div>
+        {% endif %}
+
+        <div class="car-hero-layout">
+            <div>
+                <div class="car-year-tag">{{ page.year_of_manufacture }} — {{ page.country_of_origin }}</div>
+                <h1 class="car-title">{{ page.title }}</h1>
+                <p class="car-brand-name">{{ page.get_parent.title }}</p>
+                <div class="car-description">
+                    {{ page.description|richtext }}
+                </div>
+            </div>
+
+            <div class="spec-table">
+                <div class="spec-table-header">
+                    <h3>Technical Specifications</h3>
+                </div>
+                <div class="spec-row">
+                    <span class="spec-key">Engine</span>
+                    <span class="spec-val highlight">{{ page.engine_type }}</span>
+                </div>
+                <div class="spec-row">
+                    <span class="spec-key">Horsepower</span>
+                    <span class="spec-val">{{ page.horsepower }} <small style="font-size:0.8rem; color: var(--muted);">bhp</small></span>
+                </div>
+                {% if page.top_speed_kmh %}
+                <div class="spec-row">
+                    <span class="spec-key">Top Speed</span>
+                    <span class="spec-val">{{ page.top_speed_kmh }} <small style="font-size:0.8rem; color: var(--muted);">km/h</small></span>
+                </div>
+                {% endif %}
+                {% if page.zero_to_hundred %}
+                <div class="spec-row">
+                    <span class="spec-key">0–100 km/h</span>
+                    <span class="spec-val">{{ page.zero_to_hundred }}<small style="font-size:0.8rem; color: var(--muted);">s</small></span>
+                </div>
+                {% endif %}
+                <div class="spec-row">
+                    <span class="spec-key">Year</span>
+                    <span class="spec-val">{{ page.year_of_manufacture }}</span>
+                </div>
+                <div class="spec-row">
+                    <span class="spec-key">Origin</span>
+                    <span class="spec-val" style="font-size:1rem;">{{ page.country_of_origin }}</span>
+                </div>
+                {% if page.units_produced %}
+                <div class="spec-row">
+                    <span class="spec-key">Units Made</span>
+                    <span class="spec-val highlight">{{ page.units_produced }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="numbers-section">
+        <div class="numbers-grid">
+            <div class="number-card">
+                <div class="number-big">{{ page.engine_type }}</div>
+                <div class="number-label">Engine Config</div>
+            </div>
+            <div class="number-card">
+                <div class="number-big">{{ page.horsepower }}</div>
+                <div class="number-label">Brake Horsepower</div>
+            </div>
+            {% if page.top_speed_kmh %}
+            <div class="number-card">
+                <div class="number-big">{{ page.top_speed_kmh }}</div>
+                <div class="number-label">Top Speed (km/h)</div>
+            </div>
+            {% endif %}
+            {% if page.units_produced %}
+            <div class="number-card">
+                <div class="number-big">{{ page.units_produced }}</div>
+                <div class="number-label">Units Worldwide</div>
+            </div>
+            {% elif page.zero_to_hundred %}
+            <div class="number-card">
+                <div class="number-big">{{ page.zero_to_hundred }}s</div>
+                <div class="number-label">0–100 km/h</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="back-section">
+        <a href="{{ page.get_parent.url }}" class="btn btn-outline">
+            ← Back to {{ page.get_parent.title }}
+        </a>
+    </div>
+</div>
+{% endblock %}

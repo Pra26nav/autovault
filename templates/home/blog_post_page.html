@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block extra_css %}
+.post-cover {
+    width: 100%;
+    height: 460px;
+    overflow: hidden;
+    position: relative;
+}
+
+.post-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.45;
+}
+
+.post-cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--black) 0%, transparent 55%);
+}
+
+.post-hero { padding: 5rem 0 4rem; border-bottom: 1px solid var(--border); }
+
+.breadcrumb {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+}
+
+.breadcrumb a { color: var(--gold); text-decoration: none; }
+
+.post-meta {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.post-category {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+}
+
+.post-date, .post-author {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+}
+
+.post-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 7vw, 6rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.5rem;
+}
+
+.post-intro {
+    font-size: 1.1rem;
+    color: var(--muted);
+    font-style: italic;
+    max-width: 700px;
+    line-height: 1.7;
+    border-left: 3px solid var(--gold);
+    padding-left: 1.5rem;
+}
+
+.post-body-section { padding: 5rem 0; }
+
+.post-body-layout {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 5rem;
+    align-items: start;
+}
+
+.post-body { font-size: 1rem; line-height: 1.9; color: var(--white); }
+.post-body p { margin-bottom: 1.5rem; }
+.post-body h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--gold);
+    margin: 2.5rem 0 1rem;
+}
+.post-body blockquote {
+    border-left: 3px solid var(--gold);
+    padding-left: 1.5rem;
+    font-style: italic;
+    color: var(--muted);
+    margin: 2rem 0;
+}
+
+.post-sidebar { position: sticky; top: 100px; }
+
+.sidebar-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    margin-bottom: 1px;
+}
+
+.sidebar-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.sidebar-value { font-family: 'Libre Baskerville', serif; font-size: 0.9rem; color: var(--white); }
+
+.back-section { padding: 3rem 0; }
+{% endblock %}
+
+{% block content %}
+{% if page.cover_image %}
+<div class="post-cover">
+    {% image page.cover_image fill-1400x460 as cover_img %}
+    <img src="{{ cover_img.url }}" alt="{{ page.title }}">
+    <div class="post-cover-overlay"></div>
+</div>
+{% endif %}
+
+<div class="container">
+    <div class="post-hero">
+        <div class="breadcrumb">
+            <a href="/">Home</a> /
+            <a href="{{ page.get_parent.url }}">Blog</a> /
+            {{ page.title }}
+        </div>
+        <div class="post-meta">
+            <span class="post-category">{{ page.get_category_display }}</span>
+            <span class="post-date">{{ page.date|date:"d M Y" }}</span>
+            <span class="post-author">by {{ page.author }}</span>
+        </div>
+        <h1 class="post-title">{{ page.title }}</h1>
+        <p class="post-intro">{{ page.intro }}</p>
+    </div>
+
+    <div class="post-body-section">
+        <div class="post-body-layout">
+            <div class="post-body">
+                {{ page.body|richtext }}
+            </div>
+            <aside class="post-sidebar">
+                <div class="sidebar-card">
+                    <span class="sidebar-label">Category</span>
+                    <span class="sidebar-value">{{ page.get_category_display }}</span>
+                </div>
+                <div class="sidebar-card">
+                    <span class="sidebar-label">Published</span>
+                    <span class="sidebar-value">{{ page.date|date:"d F Y" }}</span>
+                </div>
+                <div class="sidebar-card">
+                    <span class="sidebar-label">Author</span>
+                    <span class="sidebar-value">{{ page.author }}</span>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <div class="back-section">
+        <a href="{{ page.get_parent.url }}" class="btn btn-outline">← Back to Blog</a>
+    </div>
+</div>
+{% endblock %}

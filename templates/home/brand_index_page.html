@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block extra_css %}
+.page-header {
+    padding: 6rem 0 4rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.page-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+}
+
+.page-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 8vw, 7rem);
+    letter-spacing: 0.02em;
+    line-height: 0.9;
+}
+
+.brands-wrapper {
+    padding: 6rem 0;
+}
+
+.brands-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr 120px 100px;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s;
+    position: relative;
+}
+
+.brand-row:hover { background: var(--surface); padding-left: 1rem; }
+
+.brand-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+}
+
+.brand-row-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+}
+
+.brand-row:hover .brand-row-name { color: var(--gold); }
+
+.brand-row-origin {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.9rem;
+    color: var(--muted);
+    font-style: italic;
+}
+
+.brand-row-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--gold);
+    text-align: right;
+}
+
+.brand-row-arrow {
+    font-size: 1.2rem;
+    color: var(--muted);
+    text-align: right;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.brand-row:hover .brand-row-arrow {
+    color: var(--gold);
+    transform: translate(4px, -4px);
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <p class="page-eyebrow">The Encyclopedia</p>
+        <h1 class="page-title">All Brands</h1>
+    </div>
+
+    <div class="brands-wrapper">
+        <div class="brands-list">
+            {% for brand in brands %}
+            <a href="{{ brand.url }}" class="brand-row">
+                <span class="brand-num">0{{ forloop.counter }}</span>
+                <span class="brand-row-name">{{ brand.title }}</span>
+                <span class="brand-row-origin">{{ brand.country_of_origin }} &mdash; {{ brand.headquarters }}</span>
+                <span class="brand-row-year">Est. {{ brand.founded_year }}</span>
+                <span class="brand-row-arrow">↗</span>
+            </a>
+            {% empty %}
+            <p style="color: var(--muted); font-family: 'DM Mono', monospace; padding: 4rem 0;">
+                No brands added yet. Create them in the Wagtail admin.
+            </p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

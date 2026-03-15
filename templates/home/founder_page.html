@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block extra_css %}
+.founder-cover {
+    width: 100%;
+    height: 420px;
+    overflow: hidden;
+    position: relative;
+}
+
+.founder-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    opacity: 0.45;
+}
+
+.founder-cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--black) 0%, transparent 55%);
+}
+
+.founder-hero { padding: 5rem 0 4rem; border-bottom: 1px solid var(--border); }
+
+.breadcrumb {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+}
+
+.breadcrumb a { color: var(--gold); text-decoration: none; }
+
+.founder-hero-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 5rem;
+    align-items: start;
+}
+
+.founder-brand-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+}
+
+.founder-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 8vw, 7rem);
+    line-height: 0.85;
+    letter-spacing: 0.02em;
+    margin-bottom: 2rem;
+}
+
+.founder-quote {
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--gold);
+    border-left: 3px solid var(--gold);
+    padding-left: 1.5rem;
+    margin-bottom: 3rem;
+    max-width: 600px;
+}
+
+.founder-bio { font-size: 0.95rem; line-height: 1.9; color: var(--muted); }
+
+.meta-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0;
+    position: sticky;
+    top: 100px;
+    overflow: hidden;
+}
+
+.meta-portrait {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    opacity: 0.85;
+}
+
+.meta-card-body { padding: 2rem; }
+
+.meta-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.meta-row:last-child { border-bottom: none; }
+
+.meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.meta-value { font-family: 'Libre Baskerville', serif; font-size: 0.95rem; color: var(--white); }
+.meta-value.big {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+}
+
+.back-section { padding: 3rem 0; }
+{% endblock %}
+
+{% block content %}
+{% if page.portrait %}
+<div class="founder-cover">
+    {% image page.portrait fill-1400x420 as cover_img %}
+    <img src="{{ cover_img.url }}" alt="{{ page.title }}">
+    <div class="founder-cover-overlay"></div>
+</div>
+{% endif %}
+
+<div class="container">
+    <div class="founder-hero">
+        <div class="breadcrumb">
+            <a href="/">Home</a> /
+            <a href="{{ page.get_parent.url }}">Founders</a> /
+            {{ page.title }}
+        </div>
+
+        <div class="founder-hero-layout">
+            <div>
+                <div class="founder-brand-tag">{{ page.brand_name }}</div>
+                <h1 class="founder-name">{{ page.title }}</h1>
+                {% if page.legacy_quote %}
+                <blockquote class="founder-quote">"{{ page.legacy_quote }}"</blockquote>
+                {% endif %}
+                <div class="founder-bio">
+                    {{ page.biography|richtext }}
+                </div>
+            </div>
+
+            <div class="meta-card">
+                {% if page.portrait %}
+                {% image page.portrait fill-400x280 as portrait_img %}
+                <img class="meta-portrait" src="{{ portrait_img.url }}" alt="{{ page.title }}">
+                {% endif %}
+                <div class="meta-card-body">
+                    <div class="meta-row">
+                        <span class="meta-label">Brand Founded</span>
+                        <span class="meta-value big">{{ page.brand_name }}</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Nationality</span>
+                        <span class="meta-value">{{ page.nationality }}</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Born</span>
+                        <span class="meta-value">{{ page.birth_year }}</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Died</span>
+                        <span class="meta-value">
+                            {% if page.death_year %}{{ page.death_year }}{% else %}—{% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="back-section">
+        <a href="{{ page.get_parent.url }}" class="btn btn-outline">← Back to Founders</a>
+    </div>
+</div>
+{% endblock %}

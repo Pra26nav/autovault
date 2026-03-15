@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: autovault
+      POSTGRES_USER: autovault
+      POSTGRES_PASSWORD: autovault123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://autovault:autovault123@db:5432/autovault
+      - DJANGO_SETTINGS_MODULE=autovault.settings.dev
+
+volumes:
+  postgres_data:

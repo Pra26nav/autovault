@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block extra_css %}
+.brand-hero {
+    padding: 6rem 0 5rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+}
+
+.breadcrumb {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2rem;
+}
+
+.breadcrumb a { color: var(--gold); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+
+.brand-hero-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 6rem;
+    align-items: start;
+}
+
+.brand-hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 10vw, 9rem);
+    line-height: 0.85;
+    letter-spacing: 0.02em;
+    margin-bottom: 2rem;
+}
+
+.brand-hero-tagline {
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--gold);
+    margin-bottom: 2rem;
+}
+
+.brand-story {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.9;
+}
+
+.brand-meta-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    position: sticky;
+    top: 100px;
+}
+
+.meta-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.meta-row:last-child { border-bottom: none; }
+
+.meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.meta-value {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.95rem;
+    color: var(--white);
+}
+
+.models-section { padding: 6rem 0; }
+
+.section-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 3rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.models-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1px;
+    background: var(--border);
+}
+
+.model-card {
+    background: var(--deep);
+    padding: 0;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+    transition: background 0.3s;
+    overflow: hidden;
+}
+
+.model-card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.model-card:hover .model-card-img { opacity: 1; }
+
+.model-card-body {
+    padding: 1.5rem 2rem;
+}
+
+.model-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--gold);
+    transform: scaleY(0);
+    transition: transform 0.3s;
+    transform-origin: top;
+}
+
+.model-card:hover { background: var(--surface); }
+.model-card:hover::after { transform: scaleY(1); }
+
+.model-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+}
+
+.model-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 1rem;
+}
+
+.model-specs {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.spec-pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    background: rgba(201,168,76,0.1);
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.2);
+}
+
+.brand-cover {
+    width: 100%;
+    height: 480px;
+    overflow: hidden;
+    position: relative;
+}
+
+.brand-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.4;
+}
+
+.brand-cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--black) 0%, transparent 60%);
+}
+{% endblock %}
+
+{% block content %}
+{% if page.brand_image %}
+<div class="brand-cover">
+    {% image page.brand_image fill-1400x480 as brand_img %}
+    <img src="{{ brand_img.url }}" alt="{{ page.title }}">
+    <div class="brand-cover-overlay"></div>
+</div>
+{% endif %}
+
+<div class="container">
+    <div class="brand-hero">
+        <div class="breadcrumb">
+            <a href="/">Home</a> / <a href="/brands/">Brands</a> / {{ page.title }}
+        </div>
+        <div class="brand-hero-layout">
+            <div>
+                {% if page.logo %}
+                {% image page.logo max-120x80 as logo_img %}
+                <img src="{{ logo_img.url }}" alt="{{ page.title }} logo"
+                     style="height:60px; width:auto; margin-bottom:1.5rem; filter: brightness(0) invert(1); opacity:0.8;">
+                {% endif %}
+                <h1 class="brand-hero-title">{{ page.title }}</h1>
+                {% if page.tagline %}
+                <p class="brand-hero-tagline">"{{ page.tagline }}"</p>
+                {% endif %}
+                <div class="brand-story">
+                    {{ page.origin_story|richtext }}
+                </div>
+            </div>
+            <div class="brand-meta-card">
+                <div class="meta-row">
+                    <span class="meta-label">Country of Origin</span>
+                    <span class="meta-value">{{ page.country_of_origin }}</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Founded</span>
+                    <span class="meta-value">{{ page.founded_year }}</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Headquarters</span>
+                    <span class="meta-value">{{ page.headquarters }}</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Models in Vault</span>
+                    <span class="meta-value">{{ car_models.count }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="models-section">
+        <div class="section-heading">
+            <span>Iconic Models</span>
+            <span class="mono" style="font-size:1rem; color: var(--muted);">{{ car_models.count }} in vault</span>
+        </div>
+        <div class="models-grid">
+            {% for car in car_models %}
+            <a href="{{ car.url }}" class="model-card">
+                {% if car.hero_image %}
+                {% image car.hero_image fill-600x200 as car_img %}
+                <img class="model-card-img" src="{{ car_img.url }}" alt="{{ car.title }}">
+                {% endif %}
+                <div class="model-card-body">
+                    <div class="model-year">{{ car.year_of_manufacture }}</div>
+                    <div class="model-name">{{ car.title }}</div>
+                    <div class="model-specs">
+                        <span class="spec-pill">{{ car.engine_type }}</span>
+                        <span class="spec-pill">{{ car.horsepower }} bhp</span>
+                        {% if car.is_limited_edition %}
+                        <span class="spec-pill">Limited</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+            {% empty %}
+            <p style="color: var(--muted); padding: 3rem; font-family: 'DM Mono', monospace; grid-column: 1/-1;">
+                No models added yet.
+            </p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

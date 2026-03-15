@@ -1,0 +1,329 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block extra_css %}
+.search-page {
+    padding: 5rem 0;
+}
+
+.search-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 7vw, 6rem);
+    letter-spacing: 0.02em;
+    margin-bottom: 3rem;
+    line-height: 0.9;
+}
+
+.search-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+/* FILTER SIDEBAR */
+.filter-sidebar {
+    position: sticky;
+    top: 100px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2rem;
+}
+
+.filter-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.filter-group {
+    margin-bottom: 2rem;
+}
+
+.filter-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.filter-input,
+.filter-select {
+    width: 100%;
+    background: var(--deep);
+    border: 1px solid var(--border);
+    color: var(--white);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.7rem 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+    border-color: var(--gold);
+}
+
+.filter-select option { background: var(--deep); }
+
+.hp-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.filter-check {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+}
+
+.filter-check input[type="checkbox"] {
+    accent-color: var(--gold);
+    width: 14px;
+    height: 14px;
+}
+
+.filter-check span {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+}
+
+.search-bar-wrap {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.search-input {
+    width: 100%;
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-bottom: 2px solid var(--gold);
+    color: var(--white);
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1rem;
+    padding: 1rem 3rem 1rem 1.2rem;
+    outline: none;
+}
+
+.search-submit-btn {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--gold);
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+/* RESULTS */
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.results-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+}
+
+.result-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+    background: var(--deep);
+    padding: 1.8rem 2rem;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s;
+}
+
+.result-card:hover { background: var(--surface); }
+
+.result-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.3rem;
+}
+
+.result-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+}
+
+.result-specs {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.result-spec {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+}
+
+.result-year {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: var(--border);
+    text-align: right;
+}
+
+.no-results {
+    text-align: center;
+    padding: 6rem 2rem;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    background: var(--deep);
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="search-page">
+        <h1 class="search-title">Search<br><span style="color:var(--gold)">The Vault</span></h1>
+
+        <div class="search-layout">
+            <!-- FILTERS -->
+            <form method="get" action="/search/">
+                <aside class="filter-sidebar">
+                    <div class="filter-title">◆ Filters</div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Keyword Search</label>
+                        <div class="search-bar-wrap" style="margin-bottom:0">
+                            <input
+                                class="search-input"
+                                type="text"
+                                name="q"
+                                placeholder="e.g. Ferrari F40..."
+                                value="{{ query }}"
+                            >
+                            <button class="search-submit-btn" type="submit">→</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Brand</label>
+                        <select class="filter-select" name="brand">
+                            <option value="">All Brands</option>
+                            {% for brand in brands %}
+                            <option value="{{ brand.slug }}" {% if selected_brand == brand.slug %}selected{% endif %}>
+                                {{ brand.title }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Engine Type</label>
+                        <select class="filter-select" name="engine">
+                            <option value="">All Engines</option>
+                            {% for val, label in engine_choices %}
+                            <option value="{{ val }}" {% if selected_engine == val %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label">Horsepower Range (bhp)</label>
+                        <div class="hp-row">
+                            <input class="filter-input" type="number" name="min_hp" placeholder="Min" value="{{ min_hp }}">
+                            <input class="filter-input" type="number" name="max_hp" placeholder="Max" value="{{ max_hp }}">
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-check">
+                            <input type="checkbox" name="limited" value="1" {% if limited %}checked{% endif %}>
+                            <span>Limited Edition Only</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn" style="width:100%">Apply Filters</button>
+                </aside>
+            </form>
+
+            <!-- RESULTS -->
+            <div>
+                <div class="results-header">
+                    <span class="results-count">
+                        {% if query %}
+                        Results for "{{ query }}"
+                        {% else %}
+                        All Cars
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="results-list">
+                    {% for car in cars %}
+                    <a href="{{ car.url }}" class="result-card">
+                        <div>
+                            <div class="result-brand">{{ car.get_parent.title }}</div>
+                            <div class="result-name">{{ car.title }}</div>
+                            <div class="result-specs">
+                                <span class="result-spec">{{ car.engine_type }}</span>
+                                <span class="result-spec">◆</span>
+                                <span class="result-spec">{{ car.horsepower }} bhp</span>
+                                {% if car.units_produced %}
+                                <span class="result-spec">◆</span>
+                                <span class="result-spec">{{ car.units_produced }} units</span>
+                                {% endif %}
+                                {% if car.is_limited_edition %}
+                                <span class="result-spec" style="color:var(--red)">◆ Limited</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="result-year">{{ car.year_of_manufacture }}</div>
+                    </a>
+                    {% empty %}
+                    <div class="no-results">
+                        No cars found matching your filters.
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

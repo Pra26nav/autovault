@@ -1,0 +1,362 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block extra_css %}
+.hero {
+    min-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+    overflow: hidden;
+    padding: 0 4rem 6rem;
+}
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        #0a0a0a 0%,
+        #111 40%,
+        #1a1208 100%
+    );
+    z-index: 0;
+}
+
+.hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    background-size: 80px 80px;
+    z-index: 1;
+}
+
+.hero-noise {
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    z-index: 1;
+}
+
+.hero-accent {
+    position: absolute;
+    top: 20%;
+    right: -5%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+}
+
+.hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+}
+
+.hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 12vw, 10rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+}
+
+.hero-title .accent { color: var(--gold); }
+
+.hero-sub {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 480px;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+}
+
+.hero-stats {
+    position: absolute;
+    right: 4rem;
+    bottom: 6rem;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    opacity: 0;
+    animation: fadeIn 1s 1s forwards;
+}
+
+.stat {
+    text-align: right;
+    border-right: 2px solid var(--gold);
+    padding-right: 1.5rem;
+}
+
+.stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    color: var(--gold);
+    line-height: 1;
+}
+
+.stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+/* ── BRANDS SECTION ── */
+.brands-section {
+    padding: 8rem 0;
+}
+
+.section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    letter-spacing: 0.05em;
+    color: var(--white);
+}
+
+.brand-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+}
+
+.brand-card {
+    background: var(--deep);
+    padding: 2.5rem;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+}
+
+.brand-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    transform-origin: left;
+}
+
+.brand-card:hover { background: var(--surface); }
+.brand-card:hover::before { transform: scaleX(1); }
+
+.brand-country {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+}
+
+.brand-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+}
+
+.brand-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+}
+
+.brand-arrow {
+    position: absolute;
+    top: 2.5rem;
+    right: 2.5rem;
+    font-size: 1.5rem;
+    color: var(--gold);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.brand-card:hover .brand-arrow {
+    opacity: 1;
+    transform: translate(4px, -4px);
+}
+
+/* ── MARQUEE ── */
+.marquee-section {
+    padding: 3rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+    background: var(--deep);
+}
+
+.marquee-track {
+    display: flex;
+    gap: 4rem;
+    animation: marquee 25s linear infinite;
+    white-space: nowrap;
+}
+
+.marquee-item {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    flex-shrink: 0;
+}
+
+.marquee-item .dot {
+    color: var(--gold);
+    margin-right: 4rem;
+}
+
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-noise"></div>
+    <div class="hero-accent"></div>
+
+    <div class="hero-content">
+        <p class="hero-eyebrow">Est. The Golden Era of Combustion</p>
+        <h1 class="hero-title">
+            Auto<span class="accent">Vault</span>
+        </h1>
+        <p class="hero-sub">
+            The definitive encyclopedia of the world's most legendary supercars.
+            Pure combustion. Zero compromise.
+        </p>
+        <div class="hero-actions">
+            <a href="/brands/" class="btn">Explore Brands</a>
+            <a href="/search/" class="btn btn-outline">Search Cars</a>
+        </div>
+    </div>
+
+    <div class="hero-stats">
+        <div class="stat">
+            <div class="stat-num">12</div>
+            <div class="stat-label">Legendary Brands</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">100+</div>
+            <div class="stat-label">Iconic Models</div>
+        </div>
+        <div class="stat">
+            <div class="stat-num">0</div>
+            <div class="stat-label">Electric Cars</div>
+        </div>
+    </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+    <div class="marquee-track">
+        <span class="marquee-item">Ferrari <span class="dot">◆</span></span>
+        <span class="marquee-item">Lamborghini <span class="dot">◆</span></span>
+        <span class="marquee-item">Porsche <span class="dot">◆</span></span>
+        <span class="marquee-item">McLaren <span class="dot">◆</span></span>
+        <span class="marquee-item">Bugatti <span class="dot">◆</span></span>
+        <span class="marquee-item">Pagani <span class="dot">◆</span></span>
+        <span class="marquee-item">Koenigsegg <span class="dot">◆</span></span>
+        <span class="marquee-item">Aston Martin <span class="dot">◆</span></span>
+        <span class="marquee-item">Maserati <span class="dot">◆</span></span>
+        <span class="marquee-item">Bentley <span class="dot">◆</span></span>
+        <span class="marquee-item">Rolls-Royce <span class="dot">◆</span></span>
+        <span class="marquee-item">Jaguar <span class="dot">◆</span></span>
+        <!-- duplicate for seamless loop -->
+        <span class="marquee-item">Ferrari <span class="dot">◆</span></span>
+        <span class="marquee-item">Lamborghini <span class="dot">◆</span></span>
+        <span class="marquee-item">Porsche <span class="dot">◆</span></span>
+        <span class="marquee-item">McLaren <span class="dot">◆</span></span>
+        <span class="marquee-item">Bugatti <span class="dot">◆</span></span>
+        <span class="marquee-item">Pagani <span class="dot">◆</span></span>
+        <span class="marquee-item">Koenigsegg <span class="dot">◆</span></span>
+        <span class="marquee-item">Aston Martin <span class="dot">◆</span></span>
+        <span class="marquee-item">Maserati <span class="dot">◆</span></span>
+        <span class="marquee-item">Bentley <span class="dot">◆</span></span>
+        <span class="marquee-item">Rolls-Royce <span class="dot">◆</span></span>
+        <span class="marquee-item">Jaguar <span class="dot">◆</span></span>
+    </div>
+</div>
+
+<!-- BRANDS GRID -->
+<section class="brands-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">The Brands</h2>
+            <a href="/brands/" class="btn btn-outline">View All</a>
+        </div>
+        <div class="brand-grid">
+            {% for brand in page.get_children.live %}
+            {% with brand.specific as b %}
+            <a href="{{ b.url }}" class="brand-card">
+                <div class="brand-country">{{ b.country_of_origin }}</div>
+                <div class="brand-name">{{ b.title }}</div>
+                <div class="brand-year">Est. {{ b.founded_year }}</div>
+                <span class="brand-arrow">↗</span>
+            </a>
+            {% endwith %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

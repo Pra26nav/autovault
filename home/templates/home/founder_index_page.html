@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block extra_css %}
+.page-header {
+    padding: 6rem 0 4rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.page-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+}
+
+.page-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 8vw, 7rem);
+    letter-spacing: 0.02em;
+    line-height: 0.9;
+}
+
+.founders-section { padding: 5rem 0; }
+
+.founders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1px;
+    background: var(--border);
+}
+
+.founder-card {
+    background: var(--deep);
+    padding: 2.5rem;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+}
+
+.founder-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    transform-origin: left;
+}
+
+.founder-card:hover { background: var(--surface); }
+.founder-card:hover::after { transform: scaleX(1); }
+
+.founder-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+}
+
+.founder-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+}
+
+.founder-years {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+}
+
+.founder-nationality {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.founder-arrow {
+    position: absolute;
+    top: 2.5rem;
+    right: 2.5rem;
+    font-size: 1.2rem;
+    color: var(--gold);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.founder-card:hover .founder-arrow {
+    opacity: 1;
+    transform: translate(4px, -4px);
+}
+
+.no-founders {
+    padding: 4rem;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    background: var(--deep);
+    grid-column: 1/-1;
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <p class="page-eyebrow">The Visionaries</p>
+        <h1 class="page-title">Founders</h1>
+    </div>
+
+    <div class="founders-section">
+        <div class="founders-grid">
+            {% for founder in founders %}
+            <a href="{{ founder.url }}" class="founder-card">
+                <div class="founder-brand">{{ founder.brand_name }}</div>
+                <div class="founder-name">{{ founder.title }}</div>
+                <div class="founder-years">
+                    {{ founder.birth_year }} —
+                    {% if founder.death_year %}{{ founder.death_year }}{% else %}Present{% endif %}
+                </div>
+                <div class="founder-nationality">{{ founder.nationality }}</div>
+                <span class="founder-arrow">↗</span>
+            </a>
+            {% empty %}
+            <div class="no-founders">No founders added yet.</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

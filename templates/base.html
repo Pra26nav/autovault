@@ -1,0 +1,213 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AutoVault{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --black: #0a0a0a;
+            --deep: #111111;
+            --surface: #1a1a1a;
+            --border: #2a2a2a;
+            --gold: #c9a84c;
+            --gold-light: #e8c97a;
+            --white: #f0ece4;
+            --muted: #888880;
+            --red: #c0392b;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: 'Libre Baskerville', Georgia, serif;
+            font-size: 16px;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 4rem;
+            height: 72px;
+            background: rgba(10,10,10,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 0.15em;
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        .nav-logo span { color: var(--white); }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links ul {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links a {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted);
+                <li><a href="/search/">Search</a></li>
+            </ul>
+        }
+
+        .nav-links a {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        
+
+        .nav-links a:hover { color: var(--gold); }
+
+        /* ── MAIN ── */
+        main { padding-top: 72px; }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 3rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6rem;
+        }
+
+        footer .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.15em;
+            color: var(--gold);
+        }
+
+        footer p {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--muted);
+            letter-spacing: 0.1em;
+        }
+
+        /* ── UTILITIES ── */
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 4rem; }
+        .mono { font-family: 'DM Mono', monospace; }
+        .gold { color: var(--gold); }
+
+        .tag {
+            display: inline-block;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            padding: 0.3rem 0.8rem;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+        }
+
+        .btn {
+            display: inline-block;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 0.85rem 2rem;
+            background: var(--gold);
+            color: var(--black);
+            text-decoration: none;
+            font-weight: 400;
+            transition: background 0.2s, color 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover { background: var(--gold-light); }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--gold);
+            border: 1px solid var(--gold);
+        }
+
+        .btn-outline:hover { background: var(--gold); color: var(--black); }
+
+        /* ── DIVIDER ── */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider span {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--muted);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-logo">Auto<span>Vault</span></a>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/brands/">Brands</a></li>
+            <li><a href="/search/">Search</a></li>
+        </ul>
+    </nav>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <div class="logo">AutoVault</div>
+        <p>The Ultimate Supercar Encyclopedia &mdash; No Electric. Pure Combustion.</p>
+    </footer>
+</body>
+</html>
